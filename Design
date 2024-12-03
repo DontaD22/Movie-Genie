@@ -1,1 +1,125 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Random;
 
+public class MovieG extends JFrame {
+
+    private JTextField inputField;
+    private JButton submitButton;
+    private JButton vibeButton;
+    private JButton genreButton;
+    private JButton randomButton;
+    private JLabel searchLabel;
+
+    private String[] vibes = {"Romantic", "Action-packed", "Horror", "Comedy", "Drama"};
+    private String[] genres = {"Romance", "Action", "Horror", "Comedy", "Drama"};
+    private String[] movieNames = {"Titanic", "The Avengers", "The Shining", "The Hangover", "The Shawshank Redemption"};
+
+    public MovieG() {
+        setTitle("Movie Genie");
+        setSize(600, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout(10, 10));
+
+        // Main panel with a gradient background
+        JPanel mainPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2d = (Graphics2D) g;
+                GradientPaint gp = new GradientPaint(0, 0, new Color(45, 45, 50), 0, getHeight(), new Color(25, 25, 30));
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        mainPanel.setLayout(new BorderLayout(10, 10));
+
+        // Input panel
+        JPanel inputPanel = new JPanel(new FlowLayout());
+        inputPanel.setOpaque(false); // Make input panel transparent
+
+        inputField = new JTextField(20);
+        inputField.setBackground(new Color(70, 70, 70));
+        inputField.setForeground(Color.WHITE);
+        inputField.setCaretColor(Color.WHITE);
+        inputField.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        submitButton = createStyledButton("Submit");
+        vibeButton = createStyledButton("Vibe");
+        genreButton = createStyledButton("Genre");
+        randomButton = createStyledButton("Random");
+
+        searchLabel = new JLabel();
+        searchLabel.setForeground(Color.WHITE);
+        searchLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        submitButton.addActionListener(e -> {
+            String input = inputField.getText();
+            if (!input.isEmpty()) {
+                searchLabel.setText("You searched for: " + input);
+                inputField.setText("");
+            } else {
+                searchLabel.setText("Enter a movie title.");
+            }
+        });
+
+        vibeButton.addActionListener(e -> {
+            String vibe = getRandomElement(vibes);
+            searchLabel.setText("You're in the mood for: " + vibe);
+        });
+
+        genreButton.addActionListener(e -> {
+            String genre = getRandomElement(genres);
+            searchLabel.setText("You're in the mood for: " + genre);
+        });
+
+        randomButton.addActionListener(e -> {
+            String movie = getRandomElement(movieNames);
+            searchLabel.setText("Your random movie is: " + movie);
+        });
+
+        inputPanel.add(new JLabel("Enter a movie title:") {{
+            setForeground(Color.WHITE);
+        }});
+        inputPanel.add(inputField);
+        inputPanel.add(submitButton);
+        inputPanel.add(vibeButton);
+        inputPanel.add(genreButton);
+        inputPanel.add(randomButton);
+
+        mainPanel.add(inputPanel, BorderLayout.NORTH);
+        mainPanel.add(searchLabel, BorderLayout.CENTER);
+
+        add(mainPanel);
+
+        JMenuBar menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("File");
+        JMenuItem exitItem = new JMenuItem("Exit");
+        exitItem.addActionListener(e -> System.exit(0));
+        fileMenu.add(exitItem);
+        menuBar.add(fileMenu);
+        setJMenuBar(menuBar);
+    }
+
+    private JButton createStyledButton(String text) {
+        JButton button = new JButton(text);
+        button.setBackground(new Color(100, 100, 255));
+        button.setForeground(Color.WHITE);
+        button.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        button.setFocusPainted(false);
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.setPreferredSize(new Dimension(100, 40));
+        return button;
+    }
+
+    private String getRandomElement(String[] array) {
+        Random random = new Random();
+        return array[random.nextInt(array.length)];
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new MovieG().setVisible(true ));
+    }
+}
