@@ -4,122 +4,228 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 
-public class MovieG extends JFrame {
+public class SignInPage extends JFrame {
+    private JTextField usernameField;
+    private JPasswordField passwordField;
+    private JButton signInButton;
 
-    private JTextField inputField;
-    private JButton submitButton;
-    private JButton vibeButton;
-    private JButton genreButton;
+    public SignInPage() {
+        setTitle("Sign In");
+        setSize(300, 200);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new GridBagLayout());
+
+        // Create components
+        JLabel usernameLabel = new JLabel("Username:");
+        usernameLabel.setFont(new Font("Sans-serif", Font.BOLD, 17)); // Set font
+        usernameField = new JTextField(15);
+        
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setFont(new Font("Sans-serif", Font.BOLD, 17)); // Set font
+        passwordField = new JPasswordField(15);
+        
+        signInButton = new JButton("Sign In");
+        signInButton.setFont(new Font("Sans-serif", Font.BOLD, 17)); // Set font
+
+        // Action listener for sign-in button
+        signInButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Here you can add authentication logic
+                // For now, we will just open the Movie Genie page
+                new MovieG();
+                dispose(); // Close sign-in page
+            }
+        });
+
+        // Layout constraints for components
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Add padding
+
+        // Add components to the frame
+        gbc.gridx = 0; gbc.gridy = 0; gbc.anchor = GridBagConstraints.WEST;
+        add(usernameLabel, gbc);
+        
+        gbc.gridx = 1; gbc.gridy = 0;
+        add(usernameField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 1; 
+        add(passwordLabel, gbc);
+        
+        gbc.gridx = 1; gbc.gridy = 1;
+        add(passwordField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2; 
+        add(signInButton, gbc);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new SignInPage().setVisible(true));
+    }
+}
+
+class MovieG extends JFrame {
     private JButton randomButton;
     private JLabel searchLabel;
+    private JComboBox<String> genreComboBox;
+    private JPanel logoPanel;
+    private boolean isDarkMode = true; // Default to dark mode
 
-    private String[] vibes = {"Romantic", "Action-packed", "Horror", "Comedy", "Drama"};
-    private String[] genres = {"Romance", "Action", "Horror", "Comedy", "Drama"};
-    private String[] movieNames = {"Titanic", "The Avengers", "The Shining", "The Hangover", "The Shawshank Redemption"};
+    private String[] genres = {"Romance", "Action", "Horror", "Comedy", "Drama", "Thriller", "Mystery", "Science Fiction", "Documentary", "Western", "War", "Indie"};
+    private String[][] moviesByGenre = {
+        {"Titanic", "The Notebook"},
+        {"The Avengers", "Mad Max: Fury Road"},
+        {"The Shining", "Get Out"},
+        {"The Hangover", "Superbad"},
+        {"The Shawshank Redemption", "Forrest Gump"},
+        {"Se7en", "Gone Girl"},
+        {"Knives Out", "Shutter Island"},
+        {"Inception", "Interstellar"},
+        {"13th", "Won't You Be My Neighbor?"},
+        {"True Grit", "Django Unchained"},
+        {"Saving Private Ryan", "Full Metal Jacket"},
+        {"Lady Bird", "Moonlight"}
+    };
 
     public MovieG() {
         setTitle("Movie Genie");
-        setSize(600, 400);
+        setSize(800, 600); // Set a widescreen size
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout(10, 10));
+        setLayout(new BorderLayout());
 
-        // Main panel with a gradient background
-        JPanel mainPanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2d = (Graphics2D) g;
-                GradientPaint gp = new GradientPaint(0, 0, new Color(45, 45, 50), 0, getHeight(), new Color(25, 25, 30));
-                g2d.setPaint(gp);
-                g2d.fillRect(0, 0, getWidth(), getHeight());
-            }
-        };
-        mainPanel.setLayout(new BorderLayout(10, 10));
+        // Welcome message
+        JLabel welcomeLabel = new JLabel("Welcome to Movie Genie!", SwingConstants.CENTER);
+        welcomeLabel.setForeground(Color.WHITE);
+        welcomeLabel.setFont(new Font("Sans-serif", Font.BOLD, 24)); // Set font
+        add(welcomeLabel, BorderLayout.NORTH);
 
-        // Input panel
-        JPanel inputPanel = new JPanel(new FlowLayout());
-        inputPanel.setOpaque(false); // Make input panel transparent
+        // Create a panel for movie logos
+        logoPanel = new JPanel();
+        logoPanel.setLayout(new GridLayout(0, 3, 10, 10)); // 3 columns, with spacing
 
-        inputField = new JTextField(20);
-        inputField.setBackground(new Color(70, 70, 70));
-        inputField.setForeground(Color.WHITE);
-        inputField.setCaretColor(Color.WHITE);
-        inputField.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        // Add movie logo squares (JPanels)
+        for (int i = 0; i < 12; i++) {
+            JPanel logoSquare = createLogoSquare();
+            logoPanel.add(logoSquare);
+        }
 
-        submitButton = createStyledButton("Submit");
-        vibeButton = createStyledButton("Vibe");
-        genreButton = createStyledButton("Genre");
-        randomButton = createStyledButton("Random");
+        // Add the logo panel to the center of the frame
+        add(logoPanel, BorderLayout.CENTER);
 
+        // Create JComboBox for genre selection
+        genreComboBox = new JComboBox<>(genres);
+        genreComboBox.setBackground(new Color(100, 100, 255));
+        genreComboBox.setForeground(Color.WHITE);
+        genreComboBox.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        genreComboBox.setPreferredSize(new Dimension(200, 40));
+        genreComboBox.setFocusable(true);
+        genreComboBox.setToolTipText("Select a movie genre from the dropdown");
+
+        // Create button for random movie selection
+        randomButton = createStyledButton("Choose Movie");
+        randomButton.setToolTipText("Click to choose a random movie based on the selected genre");
+
+        // Label for displaying results
         searchLabel = new JLabel();
         searchLabel.setForeground(Color.WHITE);
         searchLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        searchLabel.setFont(new Font("Sans-serif", Font.BOLD, 17)); // Set font
+        searchLabel.setPreferredSize(new Dimension(300, 40));
 
-        submitButton.addActionListener(e -> {
-            String input = inputField.getText();
-            if (!input.isEmpty()) {
-                searchLabel.setText("You searched for: " + input);
-                inputField.setText("");
-            } else {
-                searchLabel.setText("Enter a movie title.");
-            }
-        });
-
-        vibeButton.addActionListener(e -> {
-            String vibe = getRandomElement(vibes);
-            searchLabel.setText("You're in the mood for: " + vibe);
-        });
-
-        genreButton.addActionListener(e -> {
-            String genre = getRandomElement(genres);
-            searchLabel.setText("You're in the mood for: " + genre);
-        });
-
+        // Action listener for the random movie button
         randomButton.addActionListener(e -> {
-            String movie = getRandomElement(movieNames);
-            searchLabel.setText("Your random movie is: " + movie);
+            String selectedGenre = (String) genreComboBox.getSelectedItem();
+            int genreIndex = genreComboBox.getSelectedIndex();
+            String movie = getRandomElement(moviesByGenre[genreIndex]);
+            searchLabel.setText("Your movie is: " + movie);
         });
 
-        inputPanel.add(new JLabel("Enter a movie title:") {{
-            setForeground(Color.WHITE);
-        }});
-        inputPanel.add(inputField);
-        inputPanel.add(submitButton);
-        inputPanel.add(vibeButton);
-        inputPanel.add(genreButton);
-        inputPanel.add(randomButton);
+        // Create a panel for the bottom controls
+        JPanel controlPanel = new JPanel();
+        controlPanel.setLayout(new FlowLayout());
+        controlPanel.add(genreComboBox);
+        controlPanel.add(randomButton);
+        controlPanel.add(searchLabel);
 
-        mainPanel.add(inputPanel, BorderLayout.NORTH);
-        mainPanel.add(searchLabel, BorderLayout.CENTER);
+        // Add control panel to the bottom of the frame
+        add(controlPanel, BorderLayout.SOUTH);
 
-        add(mainPanel);
-
+        // Menu bar
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
         JMenuItem exitItem = new JMenuItem("Exit");
         exitItem.addActionListener(e -> System.exit(0));
         fileMenu.add(exitItem);
+
+        JMenu settingsMenu = new JMenu("Settings");
+        JMenuItem toggleThemeItem = new JMenuItem("Toggle Light/Dark Mode");
+        toggleThemeItem.addActionListener(e -> {
+            isDarkMode = !isDarkMode; // Toggle the mode
+            updateTheme(); // Update the theme
+        });
+        settingsMenu.add(toggleThemeItem);
         menuBar.add(fileMenu);
+        menuBar.add(settingsMenu);
         setJMenuBar(menuBar);
+
+        // Set the background color of the frame after all components are initialized
+        updateTheme();
+
+        setVisible(true); // Make the Movie Genie frame visible
+    }
+
+    private void updateTheme() {
+        if (isDarkMode) {
+            getContentPane().setBackground(new Color(10, 10, 30));
+            searchLabel.setForeground(Color.WHITE);
+        } else {
+            getContentPane().setBackground(Color.WHITE);
+            searchLabel.setForeground(Color.BLACK);
+        }
+        logoPanel.repaint(); // Refresh the logo panel
+    }
+
+    private JPanel createLogoSquare() {
+        JPanel logoSquare = new JPanel();
+        logoSquare.setBackground(new Color(100, 100, 100)); // Placeholder color for logo
+        logoSquare.setPreferredSize(new Dimension(100, 100)); // Size of the logo square
+        logoSquare.setBorder(BorderFactory.createLineBorder(Color.WHITE)); // Border for visibility
+        return logoSquare;
     }
 
     private JButton createStyledButton(String text) {
-        JButton button = new JButton(text);
-        button.setBackground(new Color(100, 100, 255));
+        JButton button = new JButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                if (getModel().isPressed()) {
+                    g.setColor(new Color(50, 50, 150)); // Darker color when pressed
+                } else if (getModel().isRollover()) {
+                    g.setColor(new Color(70, 70, 200)); // Lighter color on hover
+                } else {
+                    g.setColor(isDarkMode ? new Color(100, 100, 255) : new Color(200, 200, 255)); // Default color
+                }
+                g.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15); // Rounded corners
+                super.paintComponent(g);
+            }
+        };
         button.setForeground(Color.WHITE);
+        button.setFont(new Font("Sans-serif", Font.BOLD, 17)); // Set font
         button.setBorder(BorderFactory.createLineBorder(Color.WHITE));
         button.setFocusPainted(false);
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        button.setPreferredSize(new Dimension(100, 40));
+        button.setPreferredSize(new Dimension(140, 40));
         return button;
     }
 
     private String getRandomElement(String[] array) {
         Random random = new Random();
         return array[random.nextInt(array.length)];
+ 
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MovieG().setVisible(true ));
+        SwingUtilities.invokeLater(() -> new SignInPage().setVisible(true));
     }
 }
