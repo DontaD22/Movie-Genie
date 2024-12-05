@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Random;
 
 public class SignInPage extends JFrame {
@@ -68,7 +70,6 @@ public class SignInPage extends JFrame {
 class MovieG extends JFrame {
     private JButton randomButton;
     private JLabel searchLabel;
-    private JComboBox<String> genreComboBox;
     private JPanel logoPanel;
     private boolean isDarkMode = true; // Default to dark mode
 
@@ -103,25 +104,16 @@ class MovieG extends JFrame {
 
         // Create a panel for movie logos
         logoPanel = new JPanel();
-        logoPanel.setLayout(new GridLayout(0, 3, 10, 10)); // 3 columns, with spacing
+        logoPanel.setLayout(new GridLayout(4, 3, 10, 10)); // 3 columns, with spacing
 
-        // Add movie logo squares (JPanels)
-        for (int i = 0; i < 12; i++) {
-            JPanel logoSquare = createLogoSquare();
+        // Add movie logo squares (JPanels) with genres
+        for (int i = 0; i < genres.length; i++) {
+            JPanel logoSquare = createLogoSquare(genres[i]);
             logoPanel.add(logoSquare);
         }
 
         // Add the logo panel to the center of the frame
         add(logoPanel, BorderLayout.CENTER);
-
-        // Create JComboBox for genre selection
-        genreComboBox = new JComboBox<>(genres);
-        genreComboBox.setBackground(new Color(100, 100, 255));
-        genreComboBox.setForeground(Color.WHITE);
-        genreComboBox.setBorder(BorderFactory.createLineBorder(Color.WHITE));
-        genreComboBox.setPreferredSize(new Dimension(200, 40));
-        genreComboBox.setFocusable(true);
-        genreComboBox.setToolTipText("Select a movie genre from the dropdown");
 
         // Create button for random movie selection
         randomButton = createStyledButton("Choose Movie");
@@ -136,8 +128,7 @@ class MovieG extends JFrame {
 
         // Action listener for the random movie button
         randomButton.addActionListener(e -> {
-            String selectedGenre = (String) genreComboBox.getSelectedItem();
-            int genreIndex = genreComboBox.getSelectedIndex();
+            int genreIndex = (int) (Math.random() * genres.length); // Randomly select a genre index
             String movie = getRandomElement(moviesByGenre[genreIndex]);
             searchLabel.setText("Your movie is: " + movie);
         });
@@ -145,7 +136,6 @@ class MovieG extends JFrame {
         // Create a panel for the bottom controls
         JPanel controlPanel = new JPanel();
         controlPanel.setLayout(new FlowLayout());
-        controlPanel.add(genreComboBox);
         controlPanel.add(randomButton);
         controlPanel.add(searchLabel);
 
@@ -179,19 +169,75 @@ class MovieG extends JFrame {
     private void updateTheme() {
         if (isDarkMode) {
             getContentPane().setBackground(new Color(10, 10, 30));
-            searchLabel.setForeground(Color.WHITE);
+            searchLabel.setForeground(Color.BLACK);
         } else {
-            getContentPane().setBackground(Color.WHITE);
+            getContentPane().setBackground(Color.BLACK);
             searchLabel.setForeground(Color.BLACK);
         }
         logoPanel.repaint(); // Refresh the logo panel
     }
 
-    private JPanel createLogoSquare() {
+    private JPanel createLogoSquare(String genre) {
         JPanel logoSquare = new JPanel();
-        logoSquare.setBackground(new Color(100, 100, 100)); // Placeholder color for logo
         logoSquare.setPreferredSize(new Dimension(100, 100)); // Size of the logo square
         logoSquare.setBorder(BorderFactory.createLineBorder(Color.WHITE)); // Border for visibility
+
+        // Set background color based on genre
+        switch (genre) {
+            case "Romance":
+                logoSquare.setBackground(Color.RED);
+                break;
+            case "Action":
+                logoSquare.setBackground(Color.BLUE);
+                break;
+            case "Horror":
+                logoSquare.setBackground(Color.BLACK);
+                break;
+            case "Comedy":
+                logoSquare.setBackground(Color.PINK);
+                break;
+            case "Drama":
+                logoSquare.setBackground(new Color(128, 0, 128)); // Purple
+                break;
+            case "Thriller":
+                logoSquare.setBackground(new Color(165, 42, 42)); // Brown
+                break;
+            case "Mystery":
+                logoSquare.setBackground(Color.ORANGE);
+                break;
+            case "Science Fiction":
+                logoSquare.setBackground(new Color(128, 0, 0)); // Maroon
+                break;
+            case "Documentary":
+                logoSquare.setBackground(Color.GREEN);
+                break;
+            case "Western":
+                logoSquare.setBackground(new Color(0, 128, 128)); // Teal
+                break;
+            case "War":
+                logoSquare.setBackground(new Color(255, 215, 0)); // Golden
+                break;
+            case "Indie":
+                logoSquare.setBackground(new Color(75, 0, 130)); // Indigo
+                break;
+        }
+
+        // Add mouse listener to handle clicks
+        logoSquare.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int genreIndex = java.util.Arrays.asList(genres).indexOf(genre);
+                String movie = getRandomElement(moviesByGenre[genreIndex]);
+                searchLabel.setText("Your movie is: " + movie);
+            }
+        });
+
+        // Add genre label to the square
+        JLabel genreLabel = new JLabel(genre, SwingConstants.CENTER);
+        genreLabel.setForeground(Color.WHITE);
+        genreLabel.setFont(new Font("Sans-serif", Font.BOLD, 14)); // Set font for genre label
+        logoSquare.add(genreLabel);
+
         return logoSquare;
     }
 
@@ -222,10 +268,9 @@ class MovieG extends JFrame {
     private String getRandomElement(String[] array) {
         Random random = new Random();
         return array[random.nextInt(array.length)];
- 
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new SignInPage().setVisible(true));
+        SwingUtilities.invokeLater(() -> new MovieG().setVisible(true));
     }
 }
