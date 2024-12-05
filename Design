@@ -274,3 +274,173 @@ class MovieG extends JFrame {
         SwingUtilities.invokeLater(() -> new MovieG().setVisible(true));
     }
 }
+
+
+//Update
+package com.okezie.gui;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.*;
+import java.util.List;
+
+public class Gui {
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new SignInPage().setVisible(true));
+    }
+}
+
+class SignInPage extends JFrame {
+    private JTextField usernameField;
+    private JPasswordField passwordField;
+    private JButton signInButton;
+
+    public SignInPage() {
+        setTitle("Sign In");
+        setSize(300, 200);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new GridBagLayout());
+
+        JLabel usernameLabel = new JLabel("Username:");
+        usernameLabel.setFont(new Font("Sans-serif", Font.BOLD, 17));
+        usernameField = new JTextField(15);
+
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setFont(new Font("Sans-serif", Font.BOLD, 17));
+        passwordField = new JPasswordField(15);
+
+        signInButton = new JButton("Sign In");
+        signInButton.setFont(new Font("Sans-serif", Font.BOLD, 17));
+
+        signInButton.addActionListener(e -> {
+            String username = usernameField.getText();
+            String password = new String(passwordField.getPassword());
+
+            if (!username.isEmpty() && !password.isEmpty()) {
+                new GenreSelectionPage();
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(SignInPage.this, "Please enter valid credentials.");
+            }
+        });
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+
+        gbc.gridx = 0; gbc.gridy = 0; gbc.anchor = GridBagConstraints.WEST;
+        add(usernameLabel, gbc);
+
+        gbc.gridx = 1; gbc.gridy = 0;
+        add(usernameField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 1;
+        add(passwordLabel, gbc);
+
+        gbc.gridx = 1; gbc.gridy = 1;
+        add(passwordField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2;
+        add(signInButton, gbc);
+    }
+}
+
+class GenreSelectionPage extends JFrame {
+    private static final String CSV_FILE = "/Users/cait/Downloads/movies_datasetmain.csv";
+
+    public GenreSelectionPage() {
+        setTitle("Movie Genie");
+        setSize(800, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
+
+        JLabel welcomeLabel = new JLabel("Welcome to Movie Genie!", SwingConstants.CENTER);
+        welcomeLabel.setFont(new Font("Sans-serif", Font.BOLD, 24));
+        welcomeLabel.setForeground(Color.WHITE);
+        welcomeLabel.setBackground(new Color(20, 20, 50));
+        welcomeLabel.setOpaque(true);
+        add(welcomeLabel, BorderLayout.NORTH);
+
+        JPanel genrePanel = new JPanel();
+        genrePanel.setLayout(new GridLayout(4, 3, 10, 10));
+        genrePanel.setBackground(new Color(10, 10, 30)); // Dark mode background
+
+        Map<String, List<String>> genreToMovies = loadMoviesByGenre();
+
+        for (String genre : genreToMovies.keySet()) {
+            genrePanel.add(createGenreButton(genre, genreToMovies.get(genre)));
+        }
+
+        add(new JScrollPane(genrePanel), BorderLayout.CENTER);
+
+        JLabel footerLabel = new JLabel("Click a genre to get a random movie.", SwingConstants.CENTER);
+        footerLabel.setFont(new Font("Sans-serif", Font.BOLD, 18));
+        footerLabel.setForeground(Color.WHITE);
+        footerLabel.setBackground(new Color(20, 20, 50));
+        footerLabel.setOpaque(true);
+        add(footerLabel, BorderLayout.SOUTH);
+
+        setVisible(true);
+    }
+
+    private Map<String, List<String>> loadMoviesByGenre() {
+        Map<String, List<String>> genreToMovies = new HashMap<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(CSV_FILE))) {
+            String line;
+            reader.readLine(); // Skip header
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data.length > 1) {
+                    String title = data[0];
+                    String[] genres = data[1].split(",");
+
+                    for (String genre : genres) {
+                        genre = genre.trim();
+                        genreToMovies.putIfAbsent(genre, new ArrayList<>());
+                        genreToMovies.get(genre).add(title);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error loading movies from CSV: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return genreToMovies;
+    }
+
+    private JButton createGenreButton(String genre, List<String> movies) {
+        JButton genreButton = new JButton(genre);
+        genreButton.setFont(new Font("Sans-serif", Font.BOLD, 16));
+        genreButton.setBackground(getGenreColor(genre));
+        genreButton.setForeground(Color.WHITE);
+        genreButton.setFocusPainted(false);
+        genreButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        genreButton.addActionListener(e -> {
+            String randomMovie = getRandomElement(movies);
+            JOptionPane.showMessageDialog(
+                GenreSelectionPage.this,
+                "Genre: " + genre + "\nRandom Movie: " + randomMovie,
+                "Movie Recommendation",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+        });
+
+        return genreButton;
+    }
+
+    private Color getGenreColor(String genre) {
+        Random random = new Random();
+        // Generate random colors for genres
+        return new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
+    }
+
+    private String getRandomElement(List<String> list) {
+        Random random = new Random();
+        return list.get(random.nextInt(list.size()));
+    }
+}
