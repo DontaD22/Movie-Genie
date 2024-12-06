@@ -6,7 +6,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Random;
 
-public class SignInPage extends JFrame {
+
+ class SignInPage extends JFrame {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton signInButton;
@@ -73,20 +74,90 @@ class MovieG extends JFrame {
     private JPanel logoPanel;
     private boolean isDarkMode = true; // Default to dark mode
 
+    
     private String[] genres = {"Romance", "Action", "Horror", "Comedy", "Drama", "Thriller", "Mystery", "Science Fiction", "Documentary", "Western", "War", "Indie"};
     private String[][] moviesByGenre = {
-        {"Titanic", "The Notebook"},
-        {"The Avengers", "Mad Max: Fury Road"},
-        {"The Shining", "Get Out"},
-        {"The Hangover", "Superbad"},
-        {"The Shawshank Redemption", "Forrest Gump"},
-        {"Se7en", "Gone Girl"},
-        {"Knives Out", "Shutter Island"},
-        {"Inception", "Interstellar"},
-        {"13th", "Won't You Be My Neighbor?"},
-        {"True Grit", "Django Unchained"},
-        {"Saving Private Ryan", "Full Metal Jacket"},
-        {"Lady Bird", "Moonlight"}
+   // Romance
+   {"Titanic", "The Notebook", "Pride and Prejudice", "The Fault in Our Stars", "La La Land", 
+   "A Walk to Remember", "The Vow", "Crazy, Stupid, Love", "10 Things I Hate About You", 
+   "Notting Hill", "The Proposal", "Me Before You", "The Time Traveler's Wife", "Love Actually", 
+   "The Best of Me", "To All the Boys I've Loved Before", "The Lucky One", "The Last Song", 
+   "The Age of Adaline", "The Choice"},
+  
+  // Action
+  {"The Avengers", "Mad Max: Fury Road", "Die Hard", "John Wick", "Gladiator", 
+   "The Dark Knight", "Inception", "The Matrix", "Jurassic Park", "Terminator 2: Judgment Day", 
+   "Mission: Impossible - Fallout", "Black Panther", "Spider-Man: Homecoming", "Guardians of the Galaxy", 
+   "Furious 7", "Django Unchained", "Casino Royale", "The Bourne Identity", "Kill Bill: Vol. 1", 
+   "The Equalizer"},
+  
+  // Horror
+  {"The Shining", "Get Out", "A Nightmare on Elm Street", "The Exorcist", "It", 
+   "Hereditary", "The Conjuring", "The Babadook", "Halloween", "The Ring", 
+   "Sinister", "Paranormal Activity", "The Witch", "Midsommar", "Us", 
+   "Scream", "The Texas Chain Saw Massacre", "It Follows", "The Grudge", 
+   "The Cabin in the Woods", "The Invisible Man"},
+  
+  // Comedy
+  {"The Hangover", "Superbad", "Step Brothers", "Bridesmaids", "Mean Girls", 
+   "Groundhog Day", "The 40-Year-Old Virgin", "Zoolander", "Dumb and Dumber", 
+   "Anchorman: The Legend of Ron Burgundy", "Ferris Bueller's Day Off", "Ghostbusters", 
+   "Shaun of the Dead", "Tropic Thunder", "Pitch Perfect", "21 Jump Street", 
+   "Crazy Rich Asians", "The Other Guys", "Hot Fuzz", "The Nice Guys"},
+  
+  // Drama
+  {"The Shawshank Redemption", "Forrest Gump", "Fight Club", "The Godfather", "12 Years a Slave", 
+   "The Social Network", "The Pursuit of Happyness", "A Beautiful Mind", "Good Will Hunting", 
+   "Schindler's List", "The Green Mile", "The Departed", "The Revenant", "Moonlight", 
+   "The King's Speech", "The Imitation Game", "The Help", "The Great Gatsby", "The Fault in Our Stars", 
+   "Little Women"},
+  
+  // Thriller
+  {"Se7en", "Gone Girl", "Prisoners", "Zodiac", "The Girl with the Dragon Tattoo", 
+   "Shutter Island", "The Sixth Sense", "Fight Club", "Memento", "No Country for Old Men", 
+   "The Silence of the Lambs", "Psycho", "The Usual Suspects", "Oldboy", "The Prestige", 
+   "The Others", "Cape Fear", "The Machinist", "The Game", "The Invisible Man"},
+  
+  // Mystery
+  {"Knives Out", "Shutter Island", "Gone Girl", "The Girl with the Dragon Tattoo", "Murder on the Orient Express", 
+   "The Sixth Sense", "Prisoners", "Zodiac", "The Usual Suspects", "The Prestige", 
+   "The Others", "Oldboy", "The Secret in Their Eyes", "The Invisible Man", "The Gift", 
+   "The Night Of", "The Killing", "The Sinner", "Broadchurch","True Detective"},
+  
+  // Science Fiction
+  {"Inception", "Interstellar", "Blade Runner 2049", "The Matrix", "Arrival", 
+   "Ex Machina", "Eternal Sunshine of the Spotless Mind", "District 9", "The Fifth Element", 
+   "Star Wars: A New Hope", "The Terminator", "Back to the Future", "Gravity", 
+   "Minority Report", "Children of Men", "The Martian", "Her", "Annihilation", 
+   "Ready Player One", "Dune"},
+  
+  // Documentary
+  {"13th", "Won't You Be My Neighbor?", "Jiro Dreams of Sushi", "Blackfish", "The Act of Killing", 
+   "The Fog of War", "Won't You Be My Neighbor?", "Searching for Sugar Man", "Inside Job", 
+   "My Octopus Teacher", "Free Solo", "The Social Dilemma", "American Factory", 
+   "The Last Dance", "Exit Through the Gift Shop", "The Keepers", "Making a Murderer", 
+   "The Inventor: Out for Blood in Silicon Valley", "The Great Hack", "The Cove"},
+  
+  // Western
+  {"True Grit", "Django Unchained", "The Good, the Bad and the Ugly", "Unforgiven", "The Magnificent Seven", 
+   "No Country for Old Men", "The Hateful Eight", "Tombstone", "The Revenant", "Silverado", 
+   "The Assassination of Jesse James by the Coward Robert Ford", "3:10 to Yuma", "The Outlaw Josey Wales", 
+   "Butch Cassidy and the Sundance Kid", "The Searchers", "High Noon", "Once Upon a Time in the West", 
+   "The Ballad of Buster Scruggs", "The Sisters Brothers", "Hell or High Water"},
+  
+  // War
+  {"Saving Private Ryan", "Full Metal Jacket", "Apocalypse Now", "Platoon", "1917", 
+   "Dunkirk", "Black Hawk Down", "The Thin Red Line", "American Sniper", "Hacksaw Ridge", 
+   "The Hurt Locker", "We Were Soldiers", "Letters from Iwo Jima", "Fury", "Atonement", 
+   "The Boy in the Striped Pajamas", "Come and See", "Paths of Glory", "The Bridge on the River Kwai", 
+   "Glory"},
+  
+  // Indie
+  {"Lady Bird", "Moonlight", "The Florida Project", "Frances Ha", "Little Miss Sunshine", 
+   "The Farewell", "Juno", "The Lobster", "The Witch", "Lady Macbeth", 
+   "The Babadook", "Eighth Grade", "The Last Black Man in San Francisco", "The Rider", 
+   "Swiss Army Man", "The Art of Self-Defense", "The Peanut Butter Falcon", "The Lighthouse", 
+   "A Ghost Story", "The Death of Dick Long"}
     };
 
     public MovieG() {
@@ -272,175 +343,5 @@ class MovieG extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new MovieG().setVisible(true));
-    }
-}
-
-
-//Update
-package com.okezie.gui;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.*;
-import java.util.List;
-
-public class Gui {
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new SignInPage().setVisible(true));
-    }
-}
-
-class SignInPage extends JFrame {
-    private JTextField usernameField;
-    private JPasswordField passwordField;
-    private JButton signInButton;
-
-    public SignInPage() {
-        setTitle("Sign In");
-        setSize(300, 200);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setLayout(new GridBagLayout());
-
-        JLabel usernameLabel = new JLabel("Username:");
-        usernameLabel.setFont(new Font("Sans-serif", Font.BOLD, 17));
-        usernameField = new JTextField(15);
-
-        JLabel passwordLabel = new JLabel("Password:");
-        passwordLabel.setFont(new Font("Sans-serif", Font.BOLD, 17));
-        passwordField = new JPasswordField(15);
-
-        signInButton = new JButton("Sign In");
-        signInButton.setFont(new Font("Sans-serif", Font.BOLD, 17));
-
-        signInButton.addActionListener(e -> {
-            String username = usernameField.getText();
-            String password = new String(passwordField.getPassword());
-
-            if (!username.isEmpty() && !password.isEmpty()) {
-                new GenreSelectionPage();
-                dispose();
-            } else {
-                JOptionPane.showMessageDialog(SignInPage.this, "Please enter valid credentials.");
-            }
-        });
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-
-        gbc.gridx = 0; gbc.gridy = 0; gbc.anchor = GridBagConstraints.WEST;
-        add(usernameLabel, gbc);
-
-        gbc.gridx = 1; gbc.gridy = 0;
-        add(usernameField, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 1;
-        add(passwordLabel, gbc);
-
-        gbc.gridx = 1; gbc.gridy = 1;
-        add(passwordField, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2;
-        add(signInButton, gbc);
-    }
-}
-
-class GenreSelectionPage extends JFrame {
-    private static final String CSV_FILE = "/Users/cait/Downloads/movies_datasetmain.csv";
-
-    public GenreSelectionPage() {
-        setTitle("Movie Genie");
-        setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
-
-        JLabel welcomeLabel = new JLabel("Welcome to Movie Genie!", SwingConstants.CENTER);
-        welcomeLabel.setFont(new Font("Sans-serif", Font.BOLD, 24));
-        welcomeLabel.setForeground(Color.WHITE);
-        welcomeLabel.setBackground(new Color(20, 20, 50));
-        welcomeLabel.setOpaque(true);
-        add(welcomeLabel, BorderLayout.NORTH);
-
-        JPanel genrePanel = new JPanel();
-        genrePanel.setLayout(new GridLayout(4, 3, 10, 10));
-        genrePanel.setBackground(new Color(10, 10, 30)); // Dark mode background
-
-        Map<String, List<String>> genreToMovies = loadMoviesByGenre();
-
-        for (String genre : genreToMovies.keySet()) {
-            genrePanel.add(createGenreButton(genre, genreToMovies.get(genre)));
-        }
-
-        add(new JScrollPane(genrePanel), BorderLayout.CENTER);
-
-        JLabel footerLabel = new JLabel("Click a genre to get a random movie.", SwingConstants.CENTER);
-        footerLabel.setFont(new Font("Sans-serif", Font.BOLD, 18));
-        footerLabel.setForeground(Color.WHITE);
-        footerLabel.setBackground(new Color(20, 20, 50));
-        footerLabel.setOpaque(true);
-        add(footerLabel, BorderLayout.SOUTH);
-
-        setVisible(true);
-    }
-
-    private Map<String, List<String>> loadMoviesByGenre() {
-        Map<String, List<String>> genreToMovies = new HashMap<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(CSV_FILE))) {
-            String line;
-            reader.readLine(); // Skip header
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data.length > 1) {
-                    String title = data[0];
-                    String[] genres = data[1].split(",");
-
-                    for (String genre : genres) {
-                        genre = genre.trim();
-                        genreToMovies.putIfAbsent(genre, new ArrayList<>());
-                        genreToMovies.get(genre).add(title);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error loading movies from CSV: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        return genreToMovies;
-    }
-
-    private JButton createGenreButton(String genre, List<String> movies) {
-        JButton genreButton = new JButton(genre);
-        genreButton.setFont(new Font("Sans-serif", Font.BOLD, 16));
-        genreButton.setBackground(getGenreColor(genre));
-        genreButton.setForeground(Color.WHITE);
-        genreButton.setFocusPainted(false);
-        genreButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-
-        genreButton.addActionListener(e -> {
-            String randomMovie = getRandomElement(movies);
-            JOptionPane.showMessageDialog(
-                GenreSelectionPage.this,
-                "Genre: " + genre + "\nRandom Movie: " + randomMovie,
-                "Movie Recommendation",
-                JOptionPane.INFORMATION_MESSAGE
-            );
-        });
-
-        return genreButton;
-    }
-
-    private Color getGenreColor(String genre) {
-        Random random = new Random();
-        // Generate random colors for genres
-        return new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
-    }
-
-    private String getRandomElement(List<String> list) {
-        Random random = new Random();
-        return list.get(random.nextInt(list.size()));
     }
 }
